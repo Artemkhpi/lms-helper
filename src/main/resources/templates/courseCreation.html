@@ -1,0 +1,102 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Course creation</title>
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Roboto:400,700">
+    <link rel="stylesheet" href="/css/fontawesome.min.css">
+    <link rel="stylesheet" href="/css/bootstrap.min.css">
+    <link rel="stylesheet" href="/css/templatemo-style.css">
+</head>
+
+<body id="reportsPage">
+<div id="home">
+    <nav class="navbar navbar-expand-xl">
+        <div class="container h-100">
+            <a class="navbar-brand" href="/">
+                <h1 class="tm-site-title mb-0">Course content: general information</h1>
+            </a>
+            <button class="navbar-toggler ml-auto mr-0" type="button" data-toggle="collapse"
+                    data-target="#navbarSupportedContent"
+                    aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+                <i class="fas fa-bars tm-nav-icon"></i>
+            </button>
+
+            <div class="collapse navbar-collapse" id="navbarSupportedContent">
+                <ul class="navbar-nav mx-auto h-100">
+                    <li class="nav-item">
+                        <a class="nav-link" href="/">
+                            <i class="far fa-file-alt"></i>
+                            Statistics
+                        </a>
+                    </li>
+
+                    <li class="nav-item">
+                        <a class="nav-link" href="/record">
+                            <i class="far fa-user"></i>
+                            Interview
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link active" href="/admin">
+                            <i class="fas fa-cog"></i>
+                            Admin page
+                            <span class="sr-only">(current)</span>
+                        </a>
+                    </li>
+                </ul>
+            </div>
+        </div>
+
+    </nav>
+    <div class="container mt-5">
+        <div class="row tm-content-row">
+            <div class="col-12 tm-block-col">
+                <div class="tm-bg-primary-dark tm-block tm-block-350">
+                    <h2 class="tm-block-title">Choose positions of articles to define course structure:</h2>
+                    <form th:action="@{/course/create}" method="post" name="course">
+                        <div class="form-group col-12">
+                            <label for="name">Name</label>
+                            <input  id="name"
+                                    name="name"
+                                    type="text"
+                                    maxlength="100"
+                                    class="form-control validate"/>
+                            <input type="hidden" name="courseId" th:value="${courseId}"/>
+                        </div>
+                        <div class="form-group col-12">
+                            <label for="scope">Scope</label>
+                            <input  id="scope"
+                                    name="scope"
+                                    type="text"
+                                    maxlength="100"
+                                    class="form-control validate"/>
+                        </div>
+                        <div class="form-group col-12">
+                            <label for="complexity">Complexity</label>
+                            <select id="complexity" name = "complexity" th:object="${complexity}" class="custom-select image-input">
+                                <option th:each="complexityValue : ${complexity}" th:value="${complexityValue}" th:text="${complexityValue}">Select
+                                    account
+                                </option>
+                            </select>
+                        </div>
+                        <button id="create-button" type="submit">Submit</button>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+    <footer class="tm-footer row tm-mt-small">
+        <div class="col-12 font-weight-light">
+            <p class="text-center text-white mb-0 px-4 small">
+                Copyright &copy; <b>2020</b> All rights reserved.
+            </p>
+        </div>
+    </footer>
+
+    <script src="/js/jquery-3.3.1.min.js"></script>
+    <script src="/js/bootstrap.min.js"></script>
+</body>
+</html>

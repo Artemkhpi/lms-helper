@@ -1,0 +1,111 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Article tests</title>
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Roboto:400,700">
+    <link rel="stylesheet" href="/css/fontawesome.min.css">
+    <link rel="stylesheet" href="/css/bootstrap.min.css">
+    <link rel="stylesheet" href="/css/templatemo-style.css">
+</head>
+
+<body id="reportsPage">
+<div class="" id="home">
+    <nav class="navbar navbar-expand-xl">
+        <div class="container h-100">
+            <a class="navbar-brand" href="/">
+                <h1 class="tm-site-title mb-0">Article tests</h1>
+            </a>
+            <button class="navbar-toggler ml-auto mr-0" type="button" data-toggle="collapse"
+                    data-target="#navbarSupportedContent"
+                    aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+                <i class="fas fa-bars tm-nav-icon"></i>
+            </button>
+
+            <div class="collapse navbar-collapse" id="navbarSupportedContent">
+                <ul class="navbar-nav mx-auto h-100">
+                    <li class="nav-item">
+                        <a class="nav-link" href="/">
+                            <i class="far fa-file-alt"></i>
+                            Statistics
+                        </a>
+                    </li>
+
+                    <li class="nav-item">
+                        <a class="nav-link" href="/record">
+                            <i class="far fa-user"></i>
+                            Interview
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link active" href="/admin">
+                            <i class="fas fa-cog"></i>
+                            Admin page
+                            <span class="sr-only">(current)</span>
+                        </a>
+                    </li>
+                </ul>
+            </div>
+        </div>
+
+    </nav>
+    <div class="container">
+        <!-- row -->
+        <div class="row tm-content-row">
+            <div class="col-sm-12 col-md-12 col-lg-6 col-xl-6 tm-block-col" th:if="${tests == null}">
+                <div class="tm-bg-primary-dark tm-block">
+                    <h2 class="tm-block-title">No tests available</h2>
+                    <a th:href="@{/course/{courseId}/tests/add(courseId=${courseId})}"
+                       class="btn-custom btn-light">CREATE ADDITIONAL TEST</a>
+                    <a th:href="@{/course/{courseId}/general-info(courseId=${courseId})}"
+                       class="btn-custom btn-light">SKIP</a>
+                </div>
+            </div>
+            <div class="col-sm-12 col-md-12 col-lg-6 col-xl-6 tm-block-col" th:if="${tests != null}" th:object="${tests}" th:each="test: ${tests}">
+                <div class="tm-bg-primary-dark tm-block">
+                    <h2 class="tm-block-title">Test</h2>
+                    <h4 class="tm-block-content" style="padding-left:10px">Questions:</h4>
+                    <h4 class="tm-block-content">
+                        <div th:each="question : ${test.questions}">
+                            <div>Text: [[${question.question}]]</div>
+                            <div>Answers:</div>
+                            <ol>
+                                <li th:each="answer : ${question.answers}" style="padding-left: 20px;">
+                                    <div>Content: [[${answer.text}]]</div>
+                                    <div>Is correct: [[${answer.correct}]]</div>
+                                </li>
+                            </ol>
+                        </div>
+                    </h4>
+                    <a th:href="@{/course/{courseId}/tests/add(courseId=${courseId})}"
+                       class="btn-custom btn-light">CREATE ADDITIONAL TEST</a>
+                    <a th:href="@{/course/{courseId}/general-info(courseId=${courseId})}"
+                       class="btn-custom btn-light">SKIP</a>
+                </div>
+            </div>
+        </div>
+    </div>
+    <footer class="tm-footer row tm-mt-small">
+        <div class="col-12 font-weight-light">
+            <p class="text-center text-white mb-0 px-4 small">
+                Copyright &copy; <b>2020</b> All rights reserved.
+            </p>
+        </div>
+    </footer>
+
+    <script src="/js/jquery-3.3.1.min.js"></script>
+    <script src="/js/bootstrap.min.js"></script>
+    <script>
+        $(function () {
+            $('*[data-href]').click(function () {
+                if (window.getSelection().toString().length === 0) {
+                    window.location = $(this).data('href');
+                    return false;
+                }
+            });
+        });
+    </script>
+</body>
+</html>

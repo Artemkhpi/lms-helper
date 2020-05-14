@@ -1,0 +1,178 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Available kms content</title>
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Roboto:400,700">
+    <link rel="stylesheet" href="/css/fontawesome.min.css">
+    <link rel="stylesheet" href="/css/bootstrap.min.css">
+    <link rel="stylesheet" href="/css/templatemo-style.css">
+</head>
+
+<body id="reportsPage">
+<div id="home">
+    <nav class="navbar navbar-expand-xl">
+        <div class="container h-100">
+            <a class="navbar-brand" href="/">
+                <h1 class="tm-site-title mb-0">Available Content</h1>
+            </a>
+            <button class="navbar-toggler ml-auto mr-0" type="button" data-toggle="collapse"
+                    data-target="#navbarSupportedContent"
+                    aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+                <i class="fas fa-bars tm-nav-icon"></i>
+            </button>
+
+            <div class="collapse navbar-collapse" id="navbarSupportedContent">
+                <ul class="navbar-nav mx-auto h-100">
+                    <li class="nav-item">
+                        <a class="nav-link" href="/">
+                            <i class="far fa-file-alt"></i>
+                            Statistics
+                        </a>
+                    </li>
+
+                    <li class="nav-item">
+                        <a class="nav-link" href="/record">
+                            <i class="far fa-user"></i>
+                            Interview
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link active" href="/admin">
+                            <i class="fas fa-cog"></i>
+                            Admin page
+                            <span class="sr-only">(current)</span>
+                        </a>
+                    </li>
+                </ul>
+            </div>
+        </div>
+
+    </nav>
+    <div class="container mt-5">
+        <div class="row tm-content-row">
+            <div class="col-12 tm-block-col">
+                <div class="tm-bg-primary-dark tm-block tm-block-max-750">
+                    <h2 class="tm-block-title">Available articles</h2>
+                    <h2 class="tm-block-content">Filter by:</h2>
+                    <div style="display: table; width: 100%;">
+                        <div class="form-group col-6" style="display: table-cell; width: 50%;">
+                            <label for="title">Title</label>
+                            <input id="title"
+                                   name="title"
+                                   type="text"
+                                   maxlength="100"
+                                   onkeyup="tableSearchTitle()"
+                                   class="form-control validate"/>
+                        </div>
+                        <div class="form-group col-6" style="display: table-cell; width: 50%;">
+                            <label for="keywords">Keyword</label>
+                            <input id="keywords"
+                                   name="keywords"
+                                   type="text"
+                                   maxlength="100"
+                                   onkeyup="tableSearchKeyword()"
+                                   class="form-control validate"/>
+                        </div>
+                    </div>
+                    <button id="create-button">Create course from selected articles</button>
+                    <div class="tm-product-table-container">
+                        <table id="data-table" class="table table-hover tm-table-small tm-product-table"
+                               style="table-layout:fixed;">
+                            <thead>
+                            <tr>
+                                <th scope="col" style="width: 40%">TITLE</th>
+                                <th scope="col" style="width: 50%">KEYWORDS</th>
+                                <th scope="col" style="width: 10%">ACTIONS</th>
+                            </tr>
+                            </thead>
+                            <tbody>
+                            <tr th:object="${articles}" th:each="article : ${articles}">
+                                <td th:text="${article.title}" class="tm-product-name"
+                                    style="white-space:pre-wrap; word-wrap:break-word"></td>
+                                <td style="word-wrap:break-word">
+                                    <span th:each="keyWord, iterStat : ${article.keyWords}"
+                                          th:text="!${iterStat.last} ? ${keyWord} + ', ': ${keyWord}"></span>
+                                </td>
+                                <td>
+                                    <a th:href="@{/article/{articleId}(articleId=${article.articleId})}"
+                                       class="btn-custom btn-light">DETAILS</a>
+                                </td>
+                                <input type="hidden" th:value="${article.articleId}"/>
+                            </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <footer class="tm-footer row tm-mt-small">
+        <div class="col-12 font-weight-light">
+            <p class="text-center text-white mb-0 px-4 small">
+                Copyright &copy; <b>2020</b> All rights reserved.
+            </p>
+        </div>
+    </footer>
+
+    <script src="/js/jquery-3.3.1.min.js"></script>
+    <script src="/js/bootstrap.min.js"></script>
+    <script>
+        $(document).ready(function () {
+            $('#data-table tbody').on('click', 'tr', function () {
+                $(this).toggleClass('selected');
+            });
+        });
+        $(document).ready(function () {
+            $('#create-button').on('click', function () {
+                var inputs = $("#data-table tr.selected :input").map(function () {
+                    return this.value;
+                });
+                var articles = "";
+                for (var i = 0; i < inputs.length; i++) {
+                    articles += inputs[i] + ",";
+                }
+                $.post("/course/articles", {articles: articles.substring(0, articles.length - 1)}).done(function (data) {
+                    window.location.href = data;
+                });
+            });
+        });
+
+    </script>
+    <script type="text/javascript">
+        function tableSearchTitle() {
+            var phrase = document.getElementById('title');
+            var table = document.getElementById('data-table');
+            var regPhrase = new RegExp(phrase.value, 'i');
+            var flag = false;
+            for (var i = 1; i < table.rows.length; i++) {
+                flag = regPhrase.test(table.rows[i].cells[0].innerHTML);
+                if (flag) {
+                    table.rows[i].style.display = "";
+                } else {
+                    table.rows[i].style.display = "none";
+                }
+
+            }
+        }
+
+        function tableSearchKeyword() {
+            var phrase = document.getElementById('keywords');
+            var table = document.getElementById('data-table');
+            var regPhrase = new RegExp(phrase.value, 'i');
+            var flag = false;
+            for (var i = 1; i < table.rows.length; i++) {
+                flag = regPhrase.test(table.rows[i].cells[1].innerHTML);
+                if (flag) {
+                    table.rows[i].style.display = "";
+                } else {
+                    table.rows[i].style.display = "none";
+                }
+
+            }
+        }
+    </script>
+</body>
+</html>
